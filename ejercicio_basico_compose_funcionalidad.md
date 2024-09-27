@@ -36,7 +36,8 @@ En Jetpack Compose, Surface es un contenedor que sirve como un bloque de constru
 
 ## 4. Ahora vamos a crear unos archivos dentro del package components, que contendrán las funciones componibles para construir pequeñas piezas que al unirlas obtendremos la UI
 ### 4.1 primero creamos el archivo BodyComponents
-![image](https://github.com/user-attachments/assets/61fc21d7-2f6a-45ab-8d1f-b7cd2573afbc)
+![image](https://github.com/user-attachments/assets/6335abea-76c7-4a07-b03b-9fc203d4c92b)
+
 ### 4.2 Haga el mismo proceso para crear los archivos CardComponents y HomeView
 Debe quedar la estructura del proyecto y archivos como se muestra en la siguiente imagen
 ![image](https://github.com/user-attachments/assets/cbccac88-c327-41ec-ab00-5fcfc200a949)
