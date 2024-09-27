@@ -1,12 +1,14 @@
 # Ejercicio desarrollo de aplicación DiscountsApp
 
 
-## 1. Crear nuevo proyecto con el nombre discountsApp
+## 1. Crear nuevo proyecto con el nombre DiscountsApp
 ### 1.1 Seleccionar Empty Activity de Jetpack compose
 ![image](https://github.com/user-attachments/assets/15b1bf4a-6170-407c-8c14-001159a8baa9)
 ### 1.2 Definir nombre del proyecto 
 Asigne el nombre de DiscountsApp y haga click en finish tal como se muestra en la siguiente ventana, para que Android Studio cree estructura de la aplicación 
-![image](https://github.com/user-attachments/assets/680b7cc2-11ed-4add-999e-55f9ab6ee2f8)
+
+![image](https://github.com/user-attachments/assets/ef8aca01-dc76-4030-bccf-ace949572ee7)
+
 ## 2. Eliminar funcion composable Greeting y su llamada en el evento onCreate de MainActivity.kt y agregamos un Surface de material3
 El código del evento onCreate de MainActivity quedaría como se muestra a continuación 
 
@@ -30,13 +32,15 @@ class MainActivity : ComponentActivity() {
 ```
 En Jetpack Compose, Surface es un contenedor que sirve como un bloque de construcción para los elementos visuales, similar a una tarjeta o una pantalla. Proporciona características como personalización de color, elevación y forma.
 ## 3. Crear package components dentro del package principal del proyecto
-![image](https://github.com/user-attachments/assets/345469d2-fac7-4e93-8e11-a27c1325dad0)
+![image](https://github.com/user-attachments/assets/cc705e7b-2c5a-4cce-a332-9cdf9c93f1f8)
+
 ## 4. Ahora vamos a crear unos archivos dentro del package components, que contendrán las funciones componibles para construir pequeñas piezas que al unirlas obtendremos la UI
 ### 4.1 primero creamos el archivo BodyComponents
 ![image](https://github.com/user-attachments/assets/61fc21d7-2f6a-45ab-8d1f-b7cd2573afbc)
 ### 4.2 Haga el mismo proceso para crear los archivos CardComponents y HomeView
 Debe quedar la estructura del proyecto y archivos como se muestra en la siguiente imagen
-![image](https://github.com/user-attachments/assets/ed973ca8-1f70-4623-95db-5315f85d14fc)
+![Uploading image.png…]()
+
 
 ## 5. Programar funciones composables en cada archivo
 ### 5.1 Programar funciones en BodyComponents.kt
