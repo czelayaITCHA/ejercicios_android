@@ -239,12 +239,13 @@ Este código crea una pantalla en **Jetpack Compose** con una barra superior (`T
 5. **`ContentHomeView(it)`**: Función que define el contenido principal de la pantalla. `it` es el **padding** generado por el `Scaffold` para evitar que el contenido quede oculto debajo de la barra superior.
 
 ## 6. Llamar la funcion HomeView() en el cuerpo de Surface() en el evento onCreate de MainActivity.kt
-![image](https://github.com/user-attachments/assets/8fc4ebb9-1252-46f9-a880-b5a48f705969)
+![image](https://github.com/user-attachments/assets/acd47462-5da3-41f5-a794-a1ca530ef77b)
+
 ## 7. Ejecutar aplicación y probar funcionalidad
 En la siguiente imágen vemos el resultado de los calculos del descuento y el total a pagar, calculados a partir del precio(puede ser de un producto), y el porcentaje de descuento.
 
-![image](https://github.com/user-attachments/assets/3235b69d-0182-491d-8596-ce123e6c4041)
+![image](https://github.com/user-attachments/assets/39f18d2f-02d3-4041-80c1-e10f4c691927)
 
 ## 8. Habilitar teclado numérico cuando el usuario digite precio y descuento, ejercicio para usted.
-![image](https://github.com/user-attachments/assets/4a615518-c90d-4954-952e-167e5c5f6e56)
+
 
