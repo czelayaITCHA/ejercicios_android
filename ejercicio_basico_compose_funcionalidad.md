@@ -242,3 +242,5 @@ En la siguiente imágen vemos el resultado de los calculos del descuento y el to
 ![image](https://github.com/user-attachments/assets/3235b69d-0182-491d-8596-ce123e6c4041)
 
 ## 8. Habilitar teclado numérico cuando el usuario digite precio y descuento, ejercicio para usted.
+![image](https://github.com/user-attachments/assets/4a615518-c90d-4954-952e-167e5c5f6e56)
+
