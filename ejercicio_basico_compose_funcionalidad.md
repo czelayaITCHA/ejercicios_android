@@ -3,7 +3,7 @@
 
 ## 1. Crear nuevo proyecto con el nombre discountsApp
 ### 1.1 Seleccionar Empty Activity de Jetpack compose
-![image](https://github.com/user-attachments/assets/28c074cf-4b69-44e4-a2c9-7aac6231d34b)
+![image](https://github.com/user-attachments/assets/15b1bf4a-6170-407c-8c14-001159a8baa9)
 ### 1.2 Definir nombre del proyecto 
 Asigne el nombre de DiscountsApp y haga click en finish tal como se muestra en la siguiente ventana, para que Android Studio cree estructura de la aplicación 
 ![image](https://github.com/user-attachments/assets/680b7cc2-11ed-4add-999e-55f9ab6ee2f8)
