@@ -39,8 +39,7 @@ En Jetpack Compose, Surface es un contenedor que sirve como un bloque de constru
 ![image](https://github.com/user-attachments/assets/61fc21d7-2f6a-45ab-8d1f-b7cd2573afbc)
 ### 4.2 Haga el mismo proceso para crear los archivos CardComponents y HomeView
 Debe quedar la estructura del proyecto y archivos como se muestra en la siguiente imagen
-![Uploading image.png…]()
-
+![image](https://github.com/user-attachments/assets/cbccac88-c327-41ec-ab00-5fcfc200a949)
 
 ## 5. Programar funciones composables en cada archivo
 ### 5.1 Programar funciones en BodyComponents.kt
