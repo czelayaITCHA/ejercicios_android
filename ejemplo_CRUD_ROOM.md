@@ -80,4 +80,26 @@ import com.zs.crudroom.models.Producto
 @Database(entities = [Producto::class], version = 1, exportSchema = false)
 abstract class ProductosDatabase : RoomDatabase() {
     abstract fun productoDao(): ProductoDao // Método abstracto para obtener el DAO
-}```
+}
+```
+## 6.- Definir métodos de la interface ProductoDao, para ello primero crear la interface en el package room
+
+```kotlin
+@Dao
+interface ProductoDao {
+    @Query("SELECT * FROM productos")
+    fun getAll(): Flow<List<Producto>>
+
+    @Query("SELECT * FROM productos WHERE id = :id")
+    fun getById(id: Int): Flow<Producto>
+
+    @Insert
+    suspend fun insert(producto: Producto)
+
+    @Update
+    suspend fun update(producto: Producto)
+
+    @Delete
+    suspend fun delete(producto: Producto)
+}
+```
