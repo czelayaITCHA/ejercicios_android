@@ -103,3 +103,50 @@ interface ProductoDao {
     suspend fun delete(producto: Producto)
 }
 ```
+Los métodos con **@Query**, como getAll() y getById(), retornan un Flow de datos. Flow es una característica de Kotlin Coroutines que permite trabajar con secuencias de datos asincrónicos de manera reactiva. Los métodos como insert(), update(), y delete() tienen la palabra clave suspend porque estos métodos no retornan un Flow, sino que realizan operaciones que pueden tomar tiempo y podrían bloquear el hilo principal.
+
+Una **corrutina** en Android es una herramienta proporcionada por Kotlin para manejar tareas asincrónicas de manera eficiente y sencilla. Las corrutinas permiten ejecutar operaciones largas (como acceder a la red o leer/escribir en una base de datos) sin bloquear el hilo principal, lo que es crucial para mantener la interfaz de usuario (UI) fluida y evitar bloqueos.
+
+## 7.- Definir el archivo de estados en el package states, para cuando la lista se actualiza guarde su estado y lo pinte en la UI
+En este caso creamos una data class
+```kotlin
+import com.zs.crudroom.models.Producto
+
+data class ProductoState(
+    //definimos todos los elementos que guardan el estado
+    val listProductos: List<Producto> = emptyList()
+)
+
+```
+## 8.- Crear el ViewModel para vincular el modelo con la base de datos y la UI, colocar el nombre a la clase *ProductoViewModel* en el package viewmodels
+```kotlin
+class ProductoViewModel(private val productoDao: ProductoDao) : ViewModel() {
+
+    var state by mutableStateOf(ProductoState())
+        private set // el estado contendra el metodo set
+    
+    //definimos el comportamiento cuando se inicie el ViewModel
+    init {
+        viewModelScope.launch {
+            //obtenemos el listado de productos y la convertimos a una coleccion
+            productoDao.getAll().collectLatest {
+                state = state.copy(
+                    listProductos = it
+                )
+            }
+        }
+    }
+    //implementamos los demas metodos
+    fun addProducto(producto: Producto) = viewModelScope.launch {
+        productoDao.insert(producto)
+    }
+    fun updateProducto(producto: Producto) = viewModelScope.launch {
+        productoDao.update(producto)
+    }
+    fun deleteProducto(producto: Producto) = viewModelScope.launch {
+        productoDao.delete(producto)
+    }
+}
+
+```
+
