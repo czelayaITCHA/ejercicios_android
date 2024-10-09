@@ -16,7 +16,7 @@ plugins {
     id("com.google.devtools.ksp") version "1.9.0-1.0.12"
 }
 ```
-Haga click en *Sync Now* para sincronizar el proyecto nuevamente
+Haga click en *Sync Now* para sincronizar el proyecto
 
 **KSP (Kotlin Symbol Processing):** es una herramienta que facilita la generación de código en proyectos Kotlin. Es parte de la suite de herramientas de desarrollo para Android y Kotlin, y su principal objetivo es reemplazar o mejorar las limitaciones de KAPT (Kotlin Annotation Processing Tool), que se utilizaba tradicionalmente para procesar anotaciones y generar código en Kotlin.
 KSP permite que los desarrolladores accedan a información de los programas de Kotlin (como clases, funciones, propiedades, etc.) en tiempo de compilación para crear bibliotecas y herramientas que generen código automáticamente.
