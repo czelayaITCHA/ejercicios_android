@@ -6,36 +6,27 @@
 ![image](https://github.com/user-attachments/assets/6f6b9aec-cdd8-426d-a7f3-66551bdb5594)
 
 ## 2.- Instalar dependencias para Room, Navigation y ViewModel
-### 2.1 agregar KSP en la sección plugins del build.gradle.kts de nivel superior
-```kotlin
-plugins {
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.jetbrains.kotlin.android) apply false
 
-    id("com.google.devtools.ksp") version "2.0.20-1.0.25" apply false
-}
-```
-Haga click en *Sync Now* para sincronizar el proyecto
-![image](https://github.com/user-attachments/assets/8a33227b-f9e7-4cc9-9aa3-fab5fc7a3417)
-
-**KSP (Kotlin Symbol Processing):** es una herramienta que facilita la generación de código en proyectos Kotlin. Es parte de la suite de herramientas de desarrollo para Android y Kotlin, y su principal objetivo es reemplazar o mejorar las limitaciones de KAPT (Kotlin Annotation Processing Tool), que se utilizaba tradicionalmente para procesar anotaciones y generar código en Kotlin.
-KSP permite que los desarrolladores accedan a información de los programas de Kotlin (como clases, funciones, propiedades, etc.) en tiempo de compilación para crear bibliotecas y herramientas que generen código automáticamente.
-
-### 2.2 Agregar plugin ksp en el archivo build.gradle.kts a nivel de modulo
+### 2.1 Agregar plugin ksp en el archivo build.gradle.kts a nivel de modulo
 ```kotlin
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
 
-    id("com.google.devtools.ksp")
+    id("com.google.devtools.ksp") version "1.9.0-1.0.12"
 }
 ```
 Haga click en *Sync Now* para sincronizar el proyecto nuevamente
-### 2.3 Agregar dependencias para Room, Navigation y ViewModel en la seccion **dependencies** en el archivo build.gradle.kts a nivel de módulo
+
+**KSP (Kotlin Symbol Processing):** es una herramienta que facilita la generación de código en proyectos Kotlin. Es parte de la suite de herramientas de desarrollo para Android y Kotlin, y su principal objetivo es reemplazar o mejorar las limitaciones de KAPT (Kotlin Annotation Processing Tool), que se utilizaba tradicionalmente para procesar anotaciones y generar código en Kotlin.
+KSP permite que los desarrolladores accedan a información de los programas de Kotlin (como clases, funciones, propiedades, etc.) en tiempo de compilación para crear bibliotecas y herramientas que generen código automáticamente.
+
+### 2.2 Agregar dependencias para Room, Navigation y ViewModel en la seccion **dependencies** en el archivo build.gradle.kts a nivel de módulo
 ```kotlin
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
     val nav_version = "2.8.0"
     // Jetpack Compose integration
@@ -375,3 +366,5 @@ fun ContentEditView(paddingValues: PaddingValues, navController: NavController, 
     }
 }
 ```
+## 11.- Modificar evento onCreate de MainActivity para crear instancias y llamar función  NavManager
+
