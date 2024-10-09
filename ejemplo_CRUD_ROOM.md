@@ -161,7 +161,7 @@ fun NavManager(viewModel: ProductoViewModel){
             HomeView(navController, viewModel)
         }
         composable("agregar"){
-            AgregarView(navController, viewModel)
+            AddView(navController, viewModel)
         }
 
         composable("editar/{id}/{nombre}/{precio}", arguments = listOf(
@@ -169,12 +169,12 @@ fun NavManager(viewModel: ProductoViewModel){
             navArgument("nombre"){type = NavType.StringType},
             navArgument("precio"){type = NavType.FloatType}
         )){
-            EditarView(
+            EditView(
                 navController, viewModel,
                 it.arguments!!.getInt("id"),
                 it.arguments?.getString("nombre"),
                 it.arguments?.getDouble("precio")
-                )
+            )
         }
     }
 }
@@ -309,6 +309,68 @@ fun ContentAddView(paddingValues: PaddingValues, navController: NavController, v
                 navController.popBackStack()
             }) {
             Text(text = "Agregar")
+        }
+    }
+}
+```
+### 10.3 Programar las funciones componibles para editar un Producto, para ello creamos un archivo EditView en el package views
+
+```kotlin
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditView(navController: NavController, viewModel: ProductoViewModel,
+               id:Int, nombre: String?, precio: Double?){
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(title = {
+                Text(text = "Editar Producto", color = Color.White,fontWeight = FontWeight.Bold) },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack()}) {
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+                    }
+                }
+            )
+        }
+    ) {
+        ContentEditView(it,navController,viewModel, id, nombre, precio)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ContentEditView(paddingValues: PaddingValues, navController: NavController, viewModel: ProductoViewModel,
+                      id: Int, nombre: String?, precio: Double?){
+    var nombre by remember { mutableStateOf(nombre) }
+    var precio by remember { mutableStateOf(precio.toString()) }
+    Column(
+        modifier = Modifier
+            .padding(paddingValues).padding(top = 30.dp).fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+        OutlinedTextField(
+            value = nombre ?: "",
+            onValueChange = {nombre = it},
+            label = { Text(text = "Producto") },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 12.dp)
+        )
+        OutlinedTextField(
+            value = precio ?: "0",
+            onValueChange = {precio = it},
+            label = { Text(text = "Precio") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 12.dp)
+        )
+        Button(
+            onClick = {
+                val producto = Producto(id=id, nombre=nombre!!, precio=precio!!.toDouble())
+                viewModel.updateProducto(producto)
+                navController.popBackStack()
+            }) {
+            Text(text = "Actualizar")
         }
     }
 }
