@@ -46,4 +46,38 @@ Haga click en *Sync Now* para sincronizar el proyecto nuevamente
 Recuerde hacer click en *Sync Now* para sincronizar el proyecto nuevamente, y con esto hemos instalado las dependencias necesarias para trabajar con ROOM
 
 ## 3.- Crear estructura de packages para un mejor orden del código y seperación de los componentes
-## 4.- Crear la clase modelo en el package models
+Creamos los packages models, navigation, room, states, viewmodels y views, en el package principal del proyecto como se muestra en la siguiente imágen
+
+![image](https://github.com/user-attachments/assets/2c0ab6dc-e494-449a-952e-ded833e675a6)
+
+## 4.- Crear la clase modelo (data class) Producto en el package models
+```kotlin
+@Entity(tableName = "productos")
+data class Producto(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    @ColumnInfo("nombre")
+    val nombre: String,
+    @ColumnInfo("precio")
+    val precio: Double
+)
+```
+
+Verifique que Android Studio importe los espacios de nombre para PrimaryKey, ColumnInfo y Entity arriba de la definición de la data class
+```kotlin
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+```
+## 5.- Crear la clase para gestionar la base de datos con Room en el package room
+Esta clase la vamos a definir como abstracta con el nombre de ProductosDatabase y la extender de RoomDatabase
+
+```kotlin
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import com.zs.crudroom.models.Producto
+
+@Database(entities = [Producto::class], version = 1, exportSchema = false)
+abstract class ProductosDatabase : RoomDatabase() {
+    abstract fun productoDao(): ProductoDao // Método abstracto para obtener el DAO
+}```
