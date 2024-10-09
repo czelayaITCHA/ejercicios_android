@@ -149,4 +149,167 @@ class ProductoViewModel(private val productoDao: ProductoDao) : ViewModel() {
 }
 
 ```
+## 9.- Ahora creamos la navegación de la aplicación para interactuar entre las diferentes vistas, para ello creamos un archivo con el nombre de NavManager en el package navigation
 
+El archivo **NavManager** debe contener la función composable en donde se definen las rutas para la navegación de la app
+```kotlin
+@Composable
+fun NavManager(viewModel: ProductoViewModel){
+    val navController = rememberNavController()
+    NavHost(navController = navController,startDestination = "home"){
+        composable("home"){
+            HomeView(navController, viewModel)
+        }
+        composable("agregar"){
+            AgregarView(navController, viewModel)
+        }
+
+        composable("editar/{id}/{nombre}/{precio}", arguments = listOf(
+            navArgument("id"){type = NavType.IntType},
+            navArgument("nombre"){type = NavType.StringType},
+            navArgument("precio"){type = NavType.FloatType}
+        )){
+            EditarView(
+                navController, viewModel,
+                it.arguments!!.getInt("id"),
+                it.arguments?.getString("nombre"),
+                it.arguments?.getDouble("precio")
+                )
+        }
+    }
+}
+```
+
+## 10.- Creamos las vistas de la aplicación
+### 10.1 creación de la vista HomeView
+Primero creamos la función composable ContentHomeView, con contiene los wigets de la vista principal
+```kotlin
+@Composable
+fun ContentHomeView(paddingValues: PaddingValues, navController: NavController, viewModel: ProductoViewModel){
+    val state = viewModel.state
+    Column(modifier = Modifier.padding(paddingValues)
+    ) {
+        LazyColumn {
+            items(state.listProductos){
+                Box(modifier = Modifier.padding(8.dp).fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)
+                    ) {
+                        Text(text = it.nombre)
+                        Text(text = it.precio.toString())
+                        IconButton(onClick = { navController.navigate("editar/${it.id}/${it.nombre}/${it.precio}") }) {
+                            Icon(imageVector = Icons.Default.Edit, contentDescription = "editar")
+                        }
+                        IconButton(onClick = { viewModel.deleteProducto(it)}) {
+                            Icon(imageVector = Icons.Default.Delete, contentDescription = "Borrar")
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+}
+```
+
+Segundo creamos la funcion composable HomeView
+
+```kotlin
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeView(navController: NavController, viewModel: ProductoViewModel){
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(text = "Home View", color = Color.White, fontWeight = FontWeight.Bold)
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ))
+        },
+        //creando un fab
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {navController.navigate("agregar") },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Agregar")
+            }
+        }
+    ) {
+        ContentHomeView(it,navController,viewModel)
+    }
+}
+```
+
+### 10.2 Programar las funciones componibles para agregar un Producto, para ello creamos un archivo AddView en el package views
+
+```kotlin
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddView(navController: NavController, viewModel: ProductoViewModel){
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(title = {
+                Text(text = "Agregar Producto", color = Color.White,fontWeight = FontWeight.Bold) },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack()}) {
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+                    }
+                }
+            )
+        }
+    ) {
+        ContentAddView(it,navController,viewModel)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ContentAddView(paddingValues: PaddingValues, navController: NavController, viewModel: ProductoViewModel){
+    var nombre by remember { mutableStateOf("") }
+    var precio by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .padding(paddingValues)
+            .padding(top = 30.dp)
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+        OutlinedTextField(
+            value = nombre,
+            onValueChange = {nombre = it},
+            label = { Text(text = "Producto") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 12.dp)
+        )
+        OutlinedTextField(
+            value = precio,
+            onValueChange = {precio = it},
+            label = { Text(text = "Precio") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 12.dp)
+        )
+        Button(
+            onClick = {
+                val producto = Producto(nombre=nombre, precio=precio.toDouble())
+                viewModel.addProducto(producto)
+                navController.popBackStack()
+            }) {
+            Text(text = "Agregar")
+        }
+    }
+}
+```
