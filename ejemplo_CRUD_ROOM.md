@@ -175,29 +175,57 @@ fun NavManager(viewModel: ProductoViewModel){
 ### 10.1 creación de la vista HomeView
 Primero creamos la función composable ContentHomeView, con contiene los wigets de la vista principal
 ```kotlin
+@SuppressLint("DefaultLocale")
 @Composable
-fun ContentHomeView(paddingValues: PaddingValues, navController: NavController, viewModel: ProductoViewModel){
+fun ContentHomeView(paddingValues: PaddingValues, navController: NavController, viewModel: ProductoViewModel) {
     val state = viewModel.state
-    Column(modifier = Modifier.padding(paddingValues)
-    ) {
+    Column(modifier = Modifier.padding(paddingValues)) {
         LazyColumn {
-            items(state.listProductos){
-                Box(modifier = Modifier.padding(8.dp).fillMaxWidth()
+            items(state.listProductos) { producto ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    )
                 ) {
-                    Column(modifier = Modifier.padding(12.dp)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = it.nombre)
-                        Text(text = it.precio.toString())
-                        IconButton(onClick = { navController.navigate("editar/${it.id}/${it.nombre}/${it.precio}") }) {
-                            Icon(imageVector = Icons.Default.Edit, contentDescription = "editar")
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                text = producto.nombre,
+                                style = MaterialTheme.typography.titleMedium, 
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+                            Text(
+                                text = String.format("$%.2f", producto.precio),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
                         }
-                        IconButton(onClick = { viewModel.deleteProducto(it)}) {
-                            Icon(imageVector = Icons.Default.Delete, contentDescription = "Borrar")
+                        Row(
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.wrapContentWidth()
+                        ) {
+                            IconButton(onClick = { navController.navigate("editar/${producto.id}/${producto.nombre}/${producto.precio}") }) {
+                                Icon(imageVector = Icons.Default.Edit, contentDescription = "Editar")
+                            }
+                            IconButton(onClick = { viewModel.deleteProducto(producto) }) {
+                                Icon(imageVector = Icons.Default.Delete, contentDescription = "Borrar")
+                            }
                         }
                     }
                 }
             }
-
         }
     }
 }
@@ -368,3 +396,28 @@ fun ContentEditView(paddingValues: PaddingValues, navController: NavController, 
 ```
 ## 11.- Modificar evento onCreate de MainActivity para crear instancias y llamar función  NavManager
 
+```kotlin
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            CRUDRoomTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    //creamos la variable para definir la bd
+                    val database = Room.databaseBuilder(this, ProductosDatabase::class.java,"db_productos").build()
+                    //definimos dao---para llamar los metodos
+                    val dao = database.productoDao()
+                    //creando nuestro viewModel
+                    val viewModel = ProductoViewModel(dao)
+                    NavManager(viewModel = viewModel)
+                }
+            }
+        }
+    }
+}
+
+```
