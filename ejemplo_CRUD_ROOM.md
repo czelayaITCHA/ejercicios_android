@@ -50,7 +50,7 @@ data class Producto(
     @ColumnInfo("nombre")
     val nombre: String,
     @ColumnInfo("precio")
-    val precio: Double
+    val precio: Float
 )
 ```
 
@@ -164,7 +164,7 @@ fun NavManager(viewModel: ProductoViewModel){
                 navController, viewModel,
                 it.arguments!!.getInt("id"),
                 it.arguments?.getString("nombre"),
-                it.arguments?.getDouble("precio")
+                it.arguments?.getFloat("precio")
             )
         }
     }
@@ -216,7 +216,9 @@ fun ContentHomeView(paddingValues: PaddingValues, navController: NavController, 
                             horizontalArrangement = Arrangement.End,
                             modifier = Modifier.wrapContentWidth()
                         ) {
-                            IconButton(onClick = { navController.navigate("editar/${producto.id}/${producto.nombre}/${producto.precio}") }) {
+                                IconButton(onClick = {
+                                val precioFormat = String.format("%.2f", producto.precio)
+                                navController.navigate("editar/${producto.id}/${producto.nombre}/$precioFormat") }) {
                                 Icon(imageVector = Icons.Default.Edit, contentDescription = "Editar")
                             }
                             IconButton(onClick = { viewModel.deleteProducto(producto) }) {
@@ -323,7 +325,7 @@ fun ContentAddView(paddingValues: PaddingValues, navController: NavController, v
         )
         Button(
             onClick = {
-                val producto = Producto(nombre=nombre, precio=precio.toDouble())
+                val producto = Producto(nombre=nombre, precio=precio.toFloat())
                 viewModel.addProducto(producto)
                 navController.popBackStack()
             }) {
@@ -338,7 +340,7 @@ fun ContentAddView(paddingValues: PaddingValues, navController: NavController, v
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditView(navController: NavController, viewModel: ProductoViewModel,
-               id:Int, nombre: String?, precio: Double?){
+               id:Int, nombre: String?, precio: Float?){
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = {
@@ -361,7 +363,7 @@ fun EditView(navController: NavController, viewModel: ProductoViewModel,
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContentEditView(paddingValues: PaddingValues, navController: NavController, viewModel: ProductoViewModel,
-                      id: Int, nombre: String?, precio: Double?){
+                      id: Int, nombre: String?, precio: Float?){
     var nombre by remember { mutableStateOf(nombre) }
     var precio by remember { mutableStateOf(precio.toString()) }
     Column(
@@ -385,7 +387,7 @@ fun ContentEditView(paddingValues: PaddingValues, navController: NavController, 
         )
         Button(
             onClick = {
-                val producto = Producto(id=id, nombre=nombre!!, precio=precio!!.toDouble())
+                val producto = Producto(id=id, nombre=nombre!!, precio=precio.toFloat())
                 viewModel.updateProducto(producto)
                 navController.popBackStack()
             }) {
@@ -421,3 +423,135 @@ class MainActivity : ComponentActivity() {
 }
 
 ```
+## 12.- Ejecutar y probar la aplicación
+![WhatsApp Image 2024-10-10 at 7 20 22 AM](https://github.com/user-attachments/assets/7e9967d4-633f-4769-98ca-7561e88c7061)
+
+## 13.- Implementación de un TextField como filtro de búsqueda
+Debido a que se puede tener una cantidad grande de productos almacenados en la base de datos del dispositivo, se debe implementar un filtro de búsqueda para encontrar productos que coincidan con la cadena de texto que el usuario digite en un TextField, para ello vamos a modificar las funciones componibles del archivo HomeView.kt
+### 13.1 crear variable de estado searchQuery y TextField en la función HomeView
+```kotlin
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeView(navController: NavController, viewModel: ProductoViewModel) {
+    var searchQuery by remember { mutableStateOf("") }
+
+    Scaffold(
+        topBar = {
+            Column {
+                CenterAlignedTopAppBar(
+                    title = {
+                        Text(text = "Listado de Productos", color = Color.White, fontWeight = FontWeight.Bold)
+                    },
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
+                )
+                // Barra de búsqueda
+                TextField(
+                    value = searchQuery,
+                    onValueChange = { query -> searchQuery = query },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    placeholder = { Text("Buscar producto...") },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                        unfocusedIndicatorColor = Color.Transparent
+                    )
+                )
+            }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate("agregar") },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Agregar")
+            }
+        }
+    ) {
+        ContentHomeView(
+            paddingValues = it,
+            navController = navController,
+            viewModel = viewModel,
+            searchQuery = searchQuery
+        )
+    }
+}
+```
+### 13.2 filtrar la lista de productos con la cadena que el usuario digite en el TextField, en la funcion ContentHomeView
+
+```kotlin
+@SuppressLint("DefaultLocale")
+@Composable
+fun ContentHomeView(
+    paddingValues: PaddingValues,
+    navController: NavController,
+    viewModel: ProductoViewModel,
+    searchQuery: String
+) {
+    val productos = viewModel.state.listProductos
+
+    // Filtrar productos basado en la búsqueda
+    val filteredProductos = remember(searchQuery, productos) {
+        productos.filter { producto ->
+            producto.nombre.contains(searchQuery, ignoreCase = true)
+        }
+    }
+
+    Column(modifier = Modifier.padding(paddingValues)) {
+        LazyColumn {
+            items(filteredProductos) { producto ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                text = producto.nombre,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+                            Text(
+                                text = String.format("$%.2f", producto.precio),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.wrapContentWidth()
+                        ) {
+                            IconButton(onClick = { navController.navigate("editar/${producto.id}/${producto.nombre}/${producto.precio}") }) {
+                                Icon(imageVector = Icons.Default.Edit, contentDescription = "Editar")
+                            }
+                            IconButton(onClick = { viewModel.deleteProducto(producto) }) {
+                                Icon(imageVector = Icons.Default.Delete, contentDescription = "Borrar")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+Probar aplicación
+
