@@ -481,6 +481,7 @@ fun HomeView(navController: NavController, viewModel: ProductoViewModel) {
         )
     }
 }
+
 ```
 ### 13.2 filtrar la lista de productos con la cadena que el usuario digite en el TextField, en la funcion ContentHomeView
 
@@ -539,7 +540,9 @@ fun ContentHomeView(
                             horizontalArrangement = Arrangement.End,
                             modifier = Modifier.wrapContentWidth()
                         ) {
-                            IconButton(onClick = { navController.navigate("editar/${producto.id}/${producto.nombre}/${producto.precio}") }) {
+                            IconButton(onClick = {
+                                val precioFormat = String.format("%.2f", producto.precio)
+                                navController.navigate("editar/${producto.id}/${producto.nombre}/$precioFormat") }) {
                                 Icon(imageVector = Icons.Default.Edit, contentDescription = "Editar")
                             }
                             IconButton(onClick = { viewModel.deleteProducto(producto) }) {
