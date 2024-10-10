@@ -558,3 +558,12 @@ fun ContentHomeView(
 ```
 Probar aplicación
 
+##Explicación
+**Estado de búsqueda local:** En HomeView, se crea un searchQuery con remember que se actualiza cada vez que el usuario escribe en el TextField.
+
+**Filtrado local:** Usando remember y derivedStateOf, filtramos la lista de productos dentro del mismo composable, de modo que el filtro es reactivo y eficiente. Cada vez que searchQuery o la lista de productos cambien, el filtrado se actualiza.
+
+**Mostrar los productos filtrados:** La lista filtrada filteredProductos se muestra dentro del LazyColumn, manteniendo el diseño y funcionalidad original del componente.
+
+Este enfoque es eficiente y adecuado para filtrar en tiempo real en la interfaz.
+
