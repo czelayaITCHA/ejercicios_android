@@ -38,7 +38,7 @@ fun HomeView(){
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { /*TODO*/ }) {
-            Text(text = "Guardad Email")
+            Text(text = "Guardar Email")
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = "Email: $email", modifier = Modifier.wrapContentWidth())
@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
 ```
 Ejecutamos la aplicación y el resultado debe ser como la siguiente imágen
 
-![image](https://github.com/user-attachments/assets/ceb633d0-5469-4658-a80d-34fa8ebe8760)
+![image](https://github.com/user-attachments/assets/036ce367-07c0-45d3-9dea-494384b9077b)
 
 ## 4.- Crear la clase DataStore para persistir datos en el dispositivo
 Creamos a nivel de package principal una clase con el nombre **StoreUserEmail**
@@ -94,4 +94,48 @@ class StoreUserEmail(private val context: Context) {
     }
 }
 ```
+## 5.- Editar la función composable HomeView para implementar la clase StoreUserEmail
+Obtenemos el contexto para pasarselo a la clase StoreUserEmail, después de la definición de la funcion HomeView, creamos la instancia de la clase e implementamos el método para guardar el email mediante DataStore, la función queda de la siguiente manera:
+```kotlin
+@Composable
+fun HomeView(){
+    //obtenemos el contexto para pasarselo a la clase StoreUserEmail
+    val context = LocalContext.current
+    val scopelaunch = rememberCoroutineScope()
+    val dataStore = StoreUserEmail(context)
 
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize()
+            .padding(horizontal = 16.dp))
+    {
+        var email by rememberSaveable { mutableStateOf("") }
+        val userEmail = dataStore.getEmail.collectAsState(initial = "")
+        TextField(
+            value = email,
+            onValueChange = {email = it},
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = {
+            scopelaunch.launch {
+                dataStore.saveEmail(email)
+            }
+        }) {
+            Text(text = "Guardar Email")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(userEmail.value.toString(), modifier = Modifier.wrapContentWidth())
+    }
+}
+
+
+```
+## 6.- Correr la aplicación y hacer pruebas
+
+| Columna 1   | Columna 2   | Columna 3   |
+|-------------|-------------|-------------|
+| ![image](https://github.com/user-attachments/assets/895fd43e-dcae-4c48-bd0b-f3b8ca6f96d0) | ![image](https://github.com/user-attachments/assets/f3a31d2e-b2e5-4038-a242-6a6686a98526)  | ![image](https://github.com/user-attachments/assets/fed63651-9543-4ef6-9803-b28e1b9a0cbf)  |
+| Captura de email con teclado tipo email habilitado  | Después de guardar (botón guardar email) el email  | Después de haber cerrado e iniciado aplicación e incluso de hacer reiniciado dispositivo  |
