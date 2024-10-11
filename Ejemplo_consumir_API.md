@@ -38,8 +38,8 @@ id("com.google.dagger.hilt.android") version "2.46.1" apply false
 
 Recordar sincronizar el proyecto y ejecutar para verificar que todo este bien hasta el momento
 
-
-
-
 ## 3.- Crear estructura de packages de acuerdo a la siguiente imagen
+
+![image](https://github.com/user-attachments/assets/46176b6d-8b4c-4aec-9c40-a9e99069979f)
+
 
