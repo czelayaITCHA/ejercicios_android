@@ -195,8 +195,30 @@ class MainActivity : ComponentActivity() {
 ```kotlin
 fun HomeView(darkModeStore: StoreDarkMode, darkMode: Boolean)
 ``` 
-### 7.4 En la llamada a la función HomeView le pasamos los parámetros
+### 7.4 En la llamada a la función HomeView dentro del evento onCreate de MainActivity, le pasamos los parámetros
 
 ```kotlin
 HomeView(darkModeStore, darkMode.value)
 ```
+### 7.5 Crear botones para cambiar el modo en la función composable HomeView
+
+```kotlin
+//Para cambiar el modo de la app
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = {
+            scopelaunch.launch {
+                darkModeStore.saveMode(!darkMode)
+            }
+        }) {
+            Text(text = "Cambiar Modo")
+        }
+
+        //boton tipo Switch para cambiar el modo
+        Switch(checked = darkMode, onCheckedChange = { isChecked ->
+            scopelaunch.launch {
+                darkModeStore.saveMode(isChecked)
+            }
+        })
+```
+
+Ejecute la aplicación y realice pruebas
