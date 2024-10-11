@@ -139,3 +139,64 @@ fun HomeView(){
 |-------------|-------------|-------------|
 | ![image](https://github.com/user-attachments/assets/895fd43e-dcae-4c48-bd0b-f3b8ca6f96d0) | ![image](https://github.com/user-attachments/assets/f3a31d2e-b2e5-4038-a242-6a6686a98526)  | ![image](https://github.com/user-attachments/assets/fed63651-9543-4ef6-9803-b28e1b9a0cbf)  |
 | Captura de email con teclado tipo email habilitado  | Después de guardar (botón guardar email) el email  | Después de haber cerrado e iniciado aplicación e incluso de hacer reiniciado dispositivo  |
+
+Puede verificar que el dato del email se hace persistente en el dispositivo, puede cambiar su valor y solo se borrará si se desintala la aplicación. Esto lo permite DataStore, que anteriormente se hacia con SharedPreferences.
+
+## 7.- Cambiar a modo dark o light de la aplicación con DataStore
+### 7.1 Creamos la clase StoreDarkMode
+
+```kotlin
+class StoreDarkMode(private val context: Context) {
+
+    companion object {
+        private val Context.dataStore : DataStore<Preferences> by preferencesDataStore("DarkMode")
+        private val DARK_MODE_KEY = booleanPreferencesKey("dark_mode")
+
+    }
+
+    val getMode: Flow<Boolean> = context.dataStore.data
+        .map { preferences -> preferences[DARK_MODE_KEY] ?: false}
+
+    suspend fun saveMode(value: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[DARK_MODE_KEY] = value
+        }
+    }
+
+}
+```
+### 7.2 Definir el contexto en MainActivity, después de setContent
+```kotlin
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            val darkModeStore = StoreDarkMode(this)
+            val darkMode = darkModeStore.getMode.collectAsState(initial = false)
+
+            DataStoreAppTheme(
+                darkTheme = darkMode.value
+            ) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                )
+                {
+                    HomeView()
+                }
+            }
+        }
+    }
+}
+
+```
+### 7.3 modificamos la función HomeView para que reciba los parametros de tipo StoreDarkMode y el Booleano
+```kotlin
+fun HomeView(darkModeStore: StoreDarkMode, darkMode: Boolean)
+``` 
+### 7.4 En la llamada a la función HomeView le pasamos los parámetros
+
+```kotlin
+HomeView(darkModeStore, darkMode.value)
+```
