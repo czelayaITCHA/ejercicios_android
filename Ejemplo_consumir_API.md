@@ -42,4 +42,25 @@ Recordar sincronizar el proyecto y ejecutar para verificar que todo este bien ha
 
 ![image](https://github.com/user-attachments/assets/46176b6d-8b4c-4aec-9c40-a9e99069979f)
 
-
+## 4.- Crear clase ProductApplication dentro del package principal
+```kotlin
+@HiltAndroidApp
+class ProductApplication : Application(){
+}
+```
+## 4.- Definir entrada de la clase y configurar permisos en el archivo AndroidManifest.xml
+En la sección de *Application* definir la entrada para la clase ProductApplication
+```xml
+android:name=".ProductApplication"
+```
+Definir permisos para acceder a Internet desde la aplicación antes del inicio de la sección Application
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+```
+## 5.- Para utilizar inyección de dependencias anotamos la clase MainActivity con @AndroidEntryPoint
+## 6.- Crear definición de interface *ApiProduct* en el package data
+La estructura de la interface debe quedar como el código siguiente, después se definirán los metodos cuando se cree el modelo
+```kotlin
+interface ApiProduct {
+}
+```
