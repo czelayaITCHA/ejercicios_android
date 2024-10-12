@@ -98,3 +98,60 @@ object AppModule {
     }
 }
 ```
+## 9.- Crear el modelo *ProductModel* en el package models
+Para definir el o los modelos a utilizar debe analizarse la estructura del JSON devuelto por la API en el endpoint principal
+```kotlin
+data class ProductModel(
+    val id : Int,
+    val title : String,
+    val price : Double,
+    val description : String,
+    val category : String,
+    val image : String,
+    val rating : Rating
+)
+
+data class Rating(
+    val rate: Double,
+    val count: Int
+)
+```
+## 10.- Definir métodos para obtener todos los productos y por id de la interface ApiProduct por el momento
+
+```kotlin
+interface ApiProduct {
+
+    @GET(ENDPOINT)
+    suspend fun getProducts(): Response<List<ProductModel>>
+
+    @GET("$ENDPOINT/{id}")
+    suspend fun getProductById(@Path("id") id: Int): Response<ProductModel>
+}
+```
+## 11.- Crear el repositorio con el nombre ProductRepository en el package *repository*
+```kotlin
+class ProductRepository @Inject constructor(private val apiProduct: ApiProduct){
+
+    suspend fun getProducts(): List<ProductModel>? {
+        val response = apiProduct.getProducts()
+        if(response.isSuccessful){
+            return response.body()
+        }
+        return null
+    }
+
+    suspend fun getProductById(id: Int) : ProductModel?{
+        val response = apiProduct.getProductById(id)
+        if(response.isSuccessful){
+            return response.body()
+        }
+        return null
+    }
+
+}
+```
+## 12.- Crear la clase *ProductState* para gestionar variables de estado
+
+
+
+## 13.- Crear el ViewModel en el package viewmodels
