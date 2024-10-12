@@ -23,6 +23,7 @@ id("com.google.dagger.hilt.android") version "2.46.1" apply false
     implementation("androidx.navigation:navigation-compose:$nav_version")
     //retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     //Coil
     implementation("io.coil-kt:coil-compose:2.5.0")
     //hilt
@@ -58,9 +59,42 @@ Definir permisos para acceder a Internet desde la aplicación antes del inicio d
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 ## 5.- Para utilizar inyección de dependencias anotamos la clase MainActivity con @AndroidEntryPoint
-## 6.- Crear definición de interface *ApiProduct* en el package data
+## 6.- Crear clase Constants que contenga un companion Object para definir constantes en el package *utils* 
+```kotlin
+class Constants {
+    companion object{
+        const val BASE_URL = "https://fakestoreapi.com/"
+        const val ENDPOINT = "products"
+        const val CUSTOM_BLACK = 0xFF2B2626
+        const val CUSTOM_GREEN = 0xFF209B14
+    }
+}
+```
+## 7.- Crear definición de interface *ApiProduct* en el package data
 La estructura de la interface debe quedar como el código siguiente, después se definirán los metodos cuando se cree el modelo
 ```kotlin
 interface ApiProduct {
+}
+```
+## 8.- En el package *di* crear objeto con el nombre AppModule, para la configuración de la inyección de dependencias 
+```kotlin
+@Module
+@InstallIn(SingletonComponent::class)
+object AppModule {
+    //para inyectar dependencia primero se define el Singleton y despues el provider
+    @Singleton
+    @Provides
+    fun providesRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun providesApiProducts(retrofit: Retrofit): ApiProduct {
+        return retrofit.create(ApiProduct::class.java)
+    }
 }
 ```
