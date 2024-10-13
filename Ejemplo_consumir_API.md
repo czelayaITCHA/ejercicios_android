@@ -155,6 +155,13 @@ data class ProductState(
     val isLoading: Boolean = false,
     val products: List<ProductModel> = emptyList(),
     val errorMessage: String = ""
+
+    val title: String = "",
+    val price: Double = 0.0,
+    val description: String = "",
+    val category: String = "",
+    val image: String = "",
+    val rating: Rating = Rating(0.0, 0)
 )
 
 
@@ -199,3 +206,18 @@ class ProductViewModel @Inject constructor(private val repository: ProductReposi
     }
 }
 ```
+## 14.- Crear archivo y funcion composable HomeView para verificar si se obtienen los productos de la API
+Hasta este punto la función HomeView será sencilla
+```kotlin
+@Composable
+fun HomeView(viewModel: ProductViewModel){
+    val products = viewModel.products.collectAsState()
+    LazyColumn {
+        items(products.value) { item ->
+            Text(text = item.title)
+        }
+    }
+}
+```
+
+## 15.- Invocar la función HomeView desde el Main Activity
