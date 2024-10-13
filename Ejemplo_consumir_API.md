@@ -20,6 +20,7 @@ id("com.google.dagger.hilt.android") version "2.46.1" apply false
 kotlin("kapt")
 id("com.google.dagger.hilt.android")
 ```
+Por problemas de dependencias con dagger y hilt vamos a usar kapt en este ejercicio
 ### 2.4 agregar dependencias en la sección de dependencies
 ```kotlin
    // Dagger Hilt
@@ -59,14 +60,12 @@ Definir permisos para acceder a Internet desde la aplicación antes del inicio d
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 ## 5.- Para utilizar inyección de dependencias anotamos la clase MainActivity con @AndroidEntryPoint
-## 6.- Crear clase Constants que contenga un companion Object para definir constantes en el package *utils* 
+## 6.- Crear clase Constants que contenga un *companion object* para definir constantes en el package *utils* 
 ```kotlin
 class Constants {
     companion object{
         const val BASE_URL = "https://fakestoreapi.com/"
         const val ENDPOINT = "products"
-        const val CUSTOM_BLACK = 0xFF2B2626
-        const val CUSTOM_GREEN = 0xFF209B14
     }
 }
 ```
@@ -81,6 +80,7 @@ interface ApiProduct {
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
     //para inyectar dependencia primero se define el Singleton y despues el provider
     @Singleton
     @Provides
@@ -97,6 +97,7 @@ object AppModule {
         return retrofit.create(ApiProduct::class.java)
     }
 }
+
 ```
 ## 9.- Crear el modelo *ProductModel* en el package models
 Para definir el o los modelos a utilizar debe analizarse la estructura del JSON devuelto por la API en el endpoint principal
@@ -126,6 +127,8 @@ interface ApiProduct {
 
     @GET("$ENDPOINT/{id}")
     suspend fun getProductById(@Path("id") id: Int): Response<ProductModel>
+
+   //faltan métodos para agregar, editar y eliminar registros
 }
 ```
 ## 11.- Crear el repositorio con el nombre ProductRepository en el package *repository*
@@ -147,7 +150,6 @@ class ProductRepository @Inject constructor(private val apiProduct: ApiProduct){
         }
         return null
     }
-
 }
 ```
 ## 12.- Crear la clase *ProductState* para gestionar variables de estado
@@ -168,6 +170,7 @@ data class ProductState(
 ## 13.- Crear el ViewModel en el package viewmodels
 
 ```kotlin
+@HiltViewModel
 class ProductViewModel @Inject constructor(private val repository: ProductRepository) : ViewModel() {
 
     private val _products = MutableStateFlow<List<ProductModel>>(emptyList())
@@ -184,12 +187,13 @@ class ProductViewModel @Inject constructor(private val repository: ProductReposi
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 val products = repository.getProducts()
+                Log.d("ProductViewModel", "Fetched products: $products")
                 _products.value = products ?: emptyList()
             }
         }
     }
 
-    private fun getProductById(id: Int) {
+    fun getProductById(id: Int) {
         viewModelScope.launch {
             withContext(Dispatchers.IO){
                 val product = repository.getProductById(id)
@@ -204,7 +208,9 @@ class ProductViewModel @Inject constructor(private val repository: ProductReposi
             }
         }
     }
+
 }
+
 ```
 ## 14.- Crear archivo y funcion composable HomeView para verificar si se obtienen los productos de la API
 Hasta este punto la función HomeView será sencilla
@@ -247,7 +253,7 @@ class MainActivity : ComponentActivity() {
                 {
                     HomeView(productViewModel)
                }
-            }
+            } 
         }
     }
 }
@@ -255,6 +261,141 @@ class MainActivity : ComponentActivity() {
 Ejecute la aplicación y deberia mostrar los títulos de los productos en los Text del HomeView
 
 ## 16.- Crear el archivo BodyComponents, en el package components para definir las funciones composables para los elementos visuales
+```kotlin
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainTopBar(title: String, showBackButton: Boolean = false, onCickBackButton: () -> Unit,
+               onCickAction: () -> Unit){
+    TopAppBar(
+        title = { Text(text = title, color = Color.White, fontWeight = FontWeight.ExtraBold) },
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        ),
+        navigationIcon = {
+            if(showBackButton){
+                IconButton(onClick = { onCickBackButton() }) {
+                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back",
+                        tint = Color.White)
+                }
+            }
+        },
+        actions = {
+            if(!showBackButton){
+                IconButton(onClick = { onCickAction() }) {
+                    Icon(imageVector = Icons.Default.Search, contentDescription = "Back",
+                        tint = Color.White)
+                }
+            }
+        }
+    )
+}
+
+@Composable
+fun CardProduct(
+    product: ProductModel,
+    onClick: () -> Unit,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    function: () -> Unit
+
+) {
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+            .shadow(elevation = 10.dp)
+            .clickable { onClick() }
+        ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            // Imagen del producto
+            ProductImage(imageUrl = product.image)
+            // Detalles del producto
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = product.title,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+
+            Text(
+                text = "$${product.price}",
+                fontWeight = FontWeight.ExtraBold,
+                style = MaterialTheme.typography.titleMedium.copy(color = Color.Black),
+                modifier = Modifier.padding(horizontal = 8.dp),
+
+            )
+            RatingBar(rating = product.rating.rate)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Botones de Editar y Eliminar
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+            ) {
+
+                IconButton(onClick = { onEditClick() }) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Editar",
+                        tint = Color.DarkGray
+                    )
+                }
+
+                IconButton(onClick = { onDeleteClick() }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Eliminar",
+                        tint = Color.Red
+                    )
+                }
+
+            }
+        }
+    }
+}
+
+@Composable
+fun ProductImage(imageUrl: String) {
+    val painter = rememberAsyncImagePainter(model = imageUrl)
+    Image(
+        painter = painter,
+        contentDescription = null,
+        contentScale = ContentScale.Fit, // Para evitar que la imagen se corte
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(250.dp)
+            .padding(8.dp)
+    )
+}
+
+@Composable
+fun RatingBar(rating: Double) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start,
+        modifier = Modifier.padding(horizontal = 8.dp)
+    ) {
+        // Mostrar estrellas según el rating (entre 0 y 5)
+        repeat(5) { index ->
+            Icon(
+                imageVector = Icons.Default.Star,
+                contentDescription = null,
+                tint = if (index < rating.toInt()) Color.Blue else Color.Gray,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = String.format("%.1f", rating))
+    }
+}
+```
 
 ## 17.- Hacer cambios en la HomeView
+
+## 18.- Crear archivo *NavManager* para gestionar la navegación entre las UI
