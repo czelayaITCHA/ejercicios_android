@@ -397,5 +397,101 @@ fun RatingBar(rating: Double) {
 ```
 
 ## 17.- Hacer cambios en la HomeView
+```kotlin
+@Composable
+fun HomeView(viewModel: ProductViewModel, navController: NavController){
+    Scaffold(
+        topBar = {
+            MainTopBar(title = "API Products", onCickBackButton = { }) {
+                navController.navigate("SearchProductView")
+            }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate("agregar") },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Agregar")
+            }
+        }
+    ) {
+        ContentHomeView(viewModel,it,navController)
+    }
+}
 
+@Composable
+fun ContentHomeView(viewModel: ProductViewModel, paddingValues: PaddingValues, navController: NavController){
+    val products by viewModel.products.collectAsState()
+
+    Column(
+        modifier = Modifier.padding(paddingValues),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .background(Color(0xFF2B2626))
+        ){
+            items(products){product ->
+                CardProduct(
+                    product = product,
+                    onClick = {},
+                    onEditClick = {},onDeleteClick = {}) {
+                    //enviar a la siguiente vista
+                    
+                }
+                Text(text = product.title, fontWeight = FontWeight.ExtraBold, color = Color.White,
+                    modifier = Modifier.padding(start = 10.dp))
+            }
+        }
+    }
+}
+
+```
 ## 18.- Crear archivo *NavManager* para gestionar la navegación entre las UI
+
+```kotlin
+@Composable
+fun NavManager(viewModel: ProductViewModel){
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = "Home"){
+        composable("Home"){
+            HomeView(viewModel, navController)
+        }
+        composable("DetailView/{id}", arguments = listOf(
+            navArgument("id") { type = NavType.IntType }
+        )  ){
+            //val id = it.arguments?.getInt("id") ?: 0
+            //DetailView(viewModel, navController, id)
+        }
+        
+    }
+}
+```
+## 19.- Llamar NavManager desde la actividad principal
+
+```kotlin
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+    private val productViewModel: ProductViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            ProductsApiAppTheme {
+               Surface(
+                   modifier = Modifier.fillMaxSize(),
+                   color = MaterialTheme.colorScheme.background
+               )
+                {
+                    NavManager(productViewModel)
+               }
+            }
+        }
+    }
+}
+```
+
+Ejecutar aplicación y observe como se cargan los productos de la API
