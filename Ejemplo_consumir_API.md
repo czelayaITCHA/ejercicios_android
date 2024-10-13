@@ -151,7 +151,51 @@ class ProductRepository @Inject constructor(private val apiProduct: ApiProduct){
 }
 ```
 ## 12.- Crear la clase *ProductState* para gestionar variables de estado
-
+data class ProductState(
+    val isLoading: Boolean = false,
+    val products: List<ProductModel> = emptyList(),
+    val errorMessage: String = ""
+)
 
 
 ## 13.- Crear el ViewModel en el package viewmodels
+
+```kotlin
+class ProductViewModel @Inject constructor(private val repository: ProductRepository) : ViewModel() {
+
+    private val _products = MutableStateFlow<List<ProductModel>>(emptyList())
+    val products = _products.asStateFlow()
+
+    var state by mutableStateOf(ProductState())
+        private set
+
+    init {
+        getProducts()
+    }
+
+    private fun getProducts() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val products = repository.getProducts()
+                _products.value = products ?: emptyList()
+            }
+        }
+    }
+
+    private fun getProductById(id: Int) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                val product = repository.getProductById(id)
+                state = state.copy(
+                    title = product?.title ?: "",
+                    price = product?.price ?: 0.0,
+                    description = product?.description ?: "",
+                    category = product?.category ?: "",
+                    image = product?.image ?: "",
+                    rating = product?.rating ?: Rating(0.0, 0)
+                )
+            }
+        }
+    }
+}
+```
