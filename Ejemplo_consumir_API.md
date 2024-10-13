@@ -15,10 +15,17 @@ Para este ejemplo vamos a consumir Fake Store API, que esta en linea y se puede 
 ```kotlin
 id("com.google.dagger.hilt.android") version "2.46.1" apply false
 ```
-### 2.3 agregar dependencias en la sección de dependencies
+### 2.3 agregar pluglin katp en el *build.gradle.kts* modulo :app
 ```kotlin
-    //dependencias agregadas
+kotlin("kapt")
+id("com.google.dagger.hilt.android")
+```
+### 2.4 agregar dependencias en la sección de dependencies
+```kotlin
+   // Dagger Hilt
     implementation("com.google.dagger:hilt-android:2.46.1")
+    kapt("com.google.dagger:hilt-compiler:2.46.1")
+
     val nav_version = "2.8.0"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     //retrofit
@@ -26,13 +33,6 @@ id("com.google.dagger.hilt.android") version "2.46.1" apply false
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     //Coil
     implementation("io.coil-kt:coil-compose:2.5.0")
-    //hilt
-    implementation("com.google.dagger:hilt-android:2.46.1")
-    val room_version = "2.6.1"
-    implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
     //viewmodel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
 ```
@@ -210,14 +210,51 @@ class ProductViewModel @Inject constructor(private val repository: ProductReposi
 Hasta este punto la función HomeView será sencilla
 ```kotlin
 @Composable
-fun HomeView(viewModel: ProductViewModel){
-    val products = viewModel.products.collectAsState()
-    LazyColumn {
-        items(products.value) { item ->
-            Text(text = item.title)
+fun HomeView(productViewModel: ProductViewModel) {
+    val products by productViewModel.products.collectAsState()
+    if (products.isEmpty()) {
+        // Mostrar un mensaje si no hay productos
+        Text("No hay productos disponibles.")
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(products) { product ->
+                Text(text = product.title)
+            }
         }
     }
 }
 ```
 
 ## 15.- Invocar la función HomeView desde el Main Activity
+```kotlin
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+    private val productViewModel: ProductViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            ProductsApiAppTheme {
+               Surface(
+                   modifier = Modifier.fillMaxSize(),
+                   color = MaterialTheme.colorScheme.background
+               )
+                {
+                    HomeView(productViewModel)
+               }
+            }
+        }
+    }
+}
+```
+Ejecute la aplicación y deberia mostrar los títulos de los productos en los Text del HomeView
+
+## 16.- Crear el archivo BodyComponents, en el package components para definir las funciones composables para los elementos visuales
+
+
+## 17.- Hacer cambios en la HomeView
