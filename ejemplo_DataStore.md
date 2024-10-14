@@ -135,7 +135,7 @@ fun HomeView(){
 ```
 ## 6.- Correr la aplicación y hacer pruebas
 
-| Columna 1   | Columna 2   | Columna 3   |
+| Vista 1   | Vista 2   | Vista 3   |
 |-------------|-------------|-------------|
 | ![image](https://github.com/user-attachments/assets/895fd43e-dcae-4c48-bd0b-f3b8ca6f96d0) | ![image](https://github.com/user-attachments/assets/f3a31d2e-b2e5-4038-a242-6a6686a98526)  | ![image](https://github.com/user-attachments/assets/fed63651-9543-4ef6-9803-b28e1b9a0cbf)  |
 | Captura de email con teclado tipo email habilitado  | Después de guardar (botón guardar email) el email  | Después de haber cerrado e iniciado aplicación e incluso de hacer reiniciado dispositivo  |
