@@ -598,3 +598,53 @@ fun NavManager(viewModel: ProductViewModel){
 onClick = {navController.navigate("DetailView/${product.id}")},
 ```
 Hasta aquí hemos consumido los métodos getProducts y getProductById
+
+## 23.- Implementar acción de eliminar producto
+### 23.1 Agregar definición de método en la interface ApiProduct
+```kotlin
+@DELETE("$ENDPOINT/{id}")
+suspend fun deleteProduct(@Path("id") id: Int): Response<Unit>
+```
+### 23.2 implementación del método en el respositorio *ProductRepository*
+
+```kotlin
+suspend fun deleteProduct(id: Int): Boolean {
+   val response = apiProduct.deleteProduct(id)
+   return response.isSuccessful
+}
+```
+### 23.3 Definir método para eliminar product por id en el ViewModel
+
+```kotlin
+  fun deleteProductById(id: Int) {
+     viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+           val result = repository.deleteProduct(id)
+           if (result) {
+              // Eliminar el producto de la lista localmente si la solicitud fue exitosa
+              _products.value = _products.value.filter { it.id != id }
+           } else {
+              // Manejar el error si la eliminación falla
+              println("Error eliminando el producto")
+           }
+       }
+    }
+ }
+```
+### 23.4 En la función *CardProduct* del package BodyComponents definir variable de estamos para mostrar un Alert de confirmación, en el evento click del IconButton de eliminar mostrar la alert y definir función para mostrar confirmación 
+```kotlin
+ var showDialog by remember { mutableStateOf(false) }
+```
+La linea anterior copiarla antes del inicio del *Card*, ahora el IconButton para eliminar debe quedar como el siguiente código
+
+```kotlin
+IconButton(onClick = { showDialog = true }) {
+   Icon(
+      imageVector = Icons.Default.Delete,
+      contentDescription = "Eliminar",
+      tint = Color.Red
+      )
+}
+```
+
+
