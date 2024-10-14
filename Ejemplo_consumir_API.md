@@ -672,4 +672,11 @@ IconButton(onClick = { showDialog = true }) {
            })//fin del AlertDialog
 }
 ```
+### 23.6 En el parámetro *onDeleteClick*, donde se pinta cada product con CardProduct, invocar el método del ViewModel para eliminar el producto
+```kotlin
+onDeleteClick = {
+   viewModel.deleteProductById(product.id)
+}
+```
+Ejecutar proyecto y probar esta funcionalidad, caba destacar que hará la eliminación momentaneamente(simulada) porque es una API Fake, que realmente al cargar de nuevo la aplicación el o los registros eliminados siempre se verán.
 
