@@ -646,5 +646,30 @@ IconButton(onClick = { showDialog = true }) {
       )
 }
 ```
+### 23.5 Después del cierre del Row que contiene los botones de editar y eliminar mostrar la ventana de confirmación para eliminar el producto 
 
+```kotlin
+  // mostrar dialogo de confirmacion
+  if (showDialog) {
+     AlertDialog(
+        onDismissRequest = {
+           showDialog = false
+        },
+        title = { Text(text = "Confirmar eliminación") },
+        text = { Text("¿Estás seguro/a de que deseas eliminar este producto?") },
+        confirmButton = {
+           Button( onClick = {
+              onDeleteClick() // Llamar a la función para eliminar el producto
+              showDialog = false
+              }) {
+                 Text("Eliminar")
+              }
+           },
+           dismissButton = {
+              Button( onClick = { showDialog = false // Cerrar el diálogo sin eliminar
+           }
+              ) { Text("Cancelar")  }
+           })//fin del AlertDialog
+}
+```
 
