@@ -208,7 +208,17 @@ class ProductViewModel @Inject constructor(private val repository: ProductReposi
             }
         }
     }
-
+    
+    fun clean(){
+        state = state.copy(
+            title = "",
+            price = 0.0,
+            description = "",
+            category = "",
+            image = "",
+            rating = Rating(0.0, 0)
+        )
+    }
 }
 
 ```
@@ -495,3 +505,96 @@ class MainActivity : ComponentActivity() {
 ```
 
 Ejecutar aplicación y observe como se cargan los productos de la API
+## 20.- Crear la vista DetailView para mostrar la información completa del producto cuando el usuario toque sobre el card
+```kotlin
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DetailView(viewModel: ProductViewModel, navController: NavController, id: Int){
+    LaunchedEffect(Unit){
+        viewModel.getProductById(id)
+    }
+    DisposableEffect(Unit){
+        onDispose {
+            viewModel.clean()
+        }
+    }
+    Scaffold(
+        topBar = {
+            MainTopBar(title = viewModel.state.title, showBackButton = true, onCickBackButton = {
+                navController.popBackStack()
+            }) {}
+        }
+    ) {
+        ContentDetailView(it,viewModel)
+    }
+}
+
+@SuppressLint("DefaultLocale")
+@Composable
+fun ContentDetailView(padd: PaddingValues, viewModel: ProductViewModel){
+    val state = viewModel.state
+    Column(modifier = Modifier
+        .padding(padd)
+        .background(Color(CUSTOM_BLACK))) {
+        ProductImage(state.image)
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 5.dp)
+        ) {
+            Text(text = "Price: ", color = Color.Green, style = MaterialTheme.typography.titleLarge)
+            Text(text = String.format("$%.2f", state.price), color = Color.Green, style = MaterialTheme.typography.titleLarge)
+        }
+
+        //creando el text para la descripcion del producto
+        val scroll = rememberScrollState(0)
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Text(text = "Description", color = Color.Red, modifier = Modifier.padding(start = 15.dp),
+                style = MaterialTheme.typography.bodyLarge)
+            Text(text = state.description, color = Color.White,
+                textAlign = TextAlign.Justify,
+                modifier = Modifier
+                    .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
+                    .verticalScroll(scroll))
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 5.dp)
+        ) {
+            RatingBar(rating = state.rating.rate)
+            Text(text = "Cat: ${state.category}", color = Color.Green, style = MaterialTheme.typography.titleLarge)
+        }
+    }
+}
+```
+## 21.- Modificar el *NavManager* para definir la ruta para cargar la vista DetailView y pasar el parámetro id
+
+```kotlin
+@Composable
+fun NavManager(viewModel: ProductViewModel){
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = "Home"){
+        composable("Home"){
+            HomeView(viewModel, navController)
+        }
+        composable("DetailView/{id}", arguments = listOf(
+            navArgument("id") { type = NavType.IntType }
+        )  ){
+            val id = it.arguments?.getInt("id") ?: 0
+            DetailView(viewModel, navController, id)
+        }
+        
+    }
+}
+```
+## 22.- Pasar el valor del id del producto en el onClick de cada Card
+
+```kotlin
+onClick = {navController.navigate("DetailView/${product.id}")},
+```
+Hasta aquí hemos consumido los métodos getProducts y getProductById
