@@ -8,7 +8,7 @@ Para este ejemplo vamos a consumir Fake Store API, que esta en linea y se puede 
 ![image](https://github.com/user-attachments/assets/6654d129-565e-4a7f-85c6-922e00102356)
 
 ## 2.- Instalar dependencias
-### 2.1 Agregar plugins KSP en el *build.gradle.kts* y luego hacer click en *Sync Now*
+### 2.1 Agregar dagger *build.gradle.kts* de nivel superior y luego hacer click en *Sync Now*
 ![image](https://github.com/user-attachments/assets/c5528646-89bf-4c3e-ab3a-bb98cd31af62)
 
 ### 2.2 Agregar dagger para inyección de dependencia en el archivo *build.gradle.kts* de nivel superior, haga click en *Sync Now*
