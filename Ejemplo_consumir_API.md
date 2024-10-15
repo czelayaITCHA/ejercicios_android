@@ -8,20 +8,17 @@ Para este ejemplo vamos a consumir Fake Store API, que esta en linea y se puede 
 ![image](https://github.com/user-attachments/assets/6654d129-565e-4a7f-85c6-922e00102356)
 
 ## 2.- Instalar dependencias
-### 2.1 Agregar dagger *build.gradle.kts* de nivel superior y luego hacer click en *Sync Now*
-![image](https://github.com/user-attachments/assets/c5528646-89bf-4c3e-ab3a-bb98cd31af62)
-
-### 2.2 Agregar dagger para inyección de dependencia en el archivo *build.gradle.kts* de nivel superior, haga click en *Sync Now*
+### 2.1 Agregar dagger para inyección de dependencia en el archivo *build.gradle.kts* de nivel superior, haga click en *Sync Now*
 ```kotlin
 id("com.google.dagger.hilt.android") version "2.46.1" apply false
 ```
-### 2.3 agregar pluglin katp en el *build.gradle.kts* modulo :app
+### 2.2 agregar pluglin katp en el *build.gradle.kts* modulo :app
 ```kotlin
 kotlin("kapt")
 id("com.google.dagger.hilt.android")
 ```
 Por problemas de dependencias con dagger y hilt vamos a usar kapt en este ejercicio
-### 2.4 agregar dependencias en la sección de dependencies
+### 2.3 agregar dependencias en la sección de dependencies
 ```kotlin
    // Dagger Hilt
     implementation("com.google.dagger:hilt-android:2.46.1")
