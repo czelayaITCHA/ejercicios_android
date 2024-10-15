@@ -150,11 +150,14 @@ class ProductRepository @Inject constructor(private val apiProduct: ApiProduct){
 }
 ```
 ## 12.- Crear la clase *ProductState* para gestionar variables de estado
+
+```kotlin
 data class ProductState(
     val isLoading: Boolean = false,
     val products: List<ProductModel> = emptyList(),
-    val errorMessage: String = ""
-
+    val errorMessage: String = "",
+    val successMessage: String = "",
+    
     val title: String = "",
     val price: Double = 0.0,
     val description: String = "",
@@ -162,7 +165,7 @@ data class ProductState(
     val image: String = "",
     val rating: Rating = Rating(0.0, 0)
 )
-
+```
 
 ## 13.- Crear el ViewModel en el package viewmodels
 
