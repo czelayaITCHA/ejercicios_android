@@ -63,6 +63,8 @@ class Constants {
     companion object{
         const val BASE_URL = "https://fakestoreapi.com/"
         const val ENDPOINT = "products"
+        const val CUSTOM_BLACK = 0xFF2B2626
+        const val CUSTOM_GREEN = 0xFF209B14
     }
 }
 ```
@@ -631,7 +633,7 @@ suspend fun deleteProduct(id: Int): Boolean {
     }
  }
 ```
-### 23.4 En la función *CardProduct* del package BodyComponents definir variable de estamos para mostrar un Alert de confirmación, en el evento click del IconButton de eliminar mostrar la alert y definir función para mostrar confirmación 
+### 23.4 En la función *CardProduct* del package BodyComponents definir variable de estado para mostrar un Alert de confirmación, en el evento click del IconButton de eliminar mostrar la alert y definir función para mostrar confirmación 
 ```kotlin
  var showDialog by remember { mutableStateOf(false) }
 ```
