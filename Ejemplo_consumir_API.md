@@ -909,7 +909,7 @@ fun RegisterProductScreen(
             singleLine = false
         )
         Column {
-            Text(text = "Rating: ${rating.toInt()} Stars",
+            Text(text = "Calificación: ${rating.toInt()} Estrellas",
                 modifier = Modifier.fillMaxWidth()
                     .padding(horizontal = 16.dp)
             )
@@ -962,7 +962,7 @@ fun RegisterProductScreen(
                         description = description,
                         category = category,
                         image = imageUri.toString(), // Guardamos la URI de la imagen seleccionada
-                        rating = Rating(0.0, 0) // Puedes modificar según lo que uses
+                        rating = Rating(rating.toDouble(), 0)
                     )
                     // Registrar el producto
                     viewModel.createProduct(newProduct)
