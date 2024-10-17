@@ -801,3 +801,7 @@ suspend fun createProduct(@Body product: ProductModel): Response<ProductModel>
      }
  }
 ```
+### 25.4 Habilitar permisos para utilizar la galeria de imágenes del dispositivo en el archivo AndroidManifest.xml
+```xml
+<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+```
