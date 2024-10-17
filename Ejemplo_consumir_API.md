@@ -69,7 +69,7 @@ class Constants {
 }
 ```
 ## 7.- Crear definición de interface *ApiProduct* en el package data
-La estructura de la interface debe quedar como el código siguiente, después se definirán los metodos cuando se cree el modelo
+La estructura de la interface debe quedar como el código siguiente, después se definirán los métodos cuando se cree el modelo
 ```kotlin
 interface ApiProduct {
 }
@@ -79,7 +79,6 @@ interface ApiProduct {
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     //para inyectar dependencia primero se define el Singleton y despues el provider
     @Singleton
     @Provides
@@ -96,8 +95,24 @@ object AppModule {
         return retrofit.create(ApiProduct::class.java)
     }
 }
-
 ```
+El código anterior, define un módulo de inyección de dependencias en una aplicación Android utilizando Hilt, un framework basado en Dagger para la inyección de dependencias. A continuación se explica brevemente cada parte:
+
+1. @Module:
+Anota la clase AppModule como un módulo de Hilt, donde se especifican cómo proveer ciertas dependencias (Retrofit, por ejemplo) a otras partes de la aplicación.
+2. @InstallIn(SingletonComponent::class):
+Indica que las dependencias definidas en este módulo estarán disponibles en toda la aplicación, es decir, tendrán un ciclo de vida de "singleton" y estarán disponibles mientras la aplicación esté en ejecución.
+3. @Singleton:
+Define que la instancia creada de la dependencia será única (singleton), es decir, se creará una única vez durante todo el ciclo de vida de la aplicación y se reutilizará donde sea necesario.
+4. @Provides:
+Indica a Hilt cómo crear y proporcionar la dependencia. Aquí se está configurando Retrofit y la interfaz ApiProduct para su uso en otras partes de la app.
+5. Función providesRetrofit():
+Proporciona una instancia de Retrofit, configurando su base URL (BASE_URL) y un convertidor de JSON (Gson) para las peticiones HTTP. Esto permitirá realizar llamadas a APIs remotas.
+6. Función providesApiProducts():
+Toma la instancia de Retrofit proporcionada y la usa para crear e inyectar una instancia de la interfaz ApiProduct, que contiene las definiciones de los endpoints de la API (normalmente mediante anotaciones como @GET, @POST, etc.).
+Resumen:
+Este módulo configura Retrofit como cliente HTTP y prepara la interfaz ApiProduct para hacer peticiones a la API. Ambas instancias se crean una vez y se reutilizan gracias al patrón Singleton, y están listas para ser inyectadas en las clases que las necesiten usando Hilt.
+
 ## 9.- Crear el modelo *ProductModel* en el package models
 Para definir el o los modelos a utilizar debe analizarse la estructura del JSON devuelto por la API en el endpoint principal
 ```kotlin
