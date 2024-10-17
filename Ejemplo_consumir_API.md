@@ -697,3 +697,69 @@ onDeleteClick = {
 ```
 Ejecutar proyecto y probar esta funcionalidad, caba destacar que hará la eliminación momentaneamente(simulada) porque es una API Fake, que realmente al cargar de nuevo la aplicación el o los registros eliminados siempre se verán.
 
+## 24.- Implementación de TextField para filtrar lista de productos
+### 24.1 Crear variable para el texto de búsqueda al inicio de la función HomeView
+```kotlin
+ var searchText by remember { mutableStateOf("") }
+```
+### 24.2 Pasar el texto de búsqueda como parámetro a la función composable ContentHomeView
+```kotlin
+ ContentHomeView(viewModel,it,navController, searchText){ newText ->
+    searchText = newText
+ }
+```
+### 24.3 Actualizar la funcion ContentHomeView para recibir los parámetros de HomeView, filtrar la colección, crear el TextField de búsuqueda y definir la nueva colección al LazyColumn
+Con los cambios la función ContentHomeView, quedaría como el siguiente código
+```kotlin
+@Composable
+fun ContentHomeView(
+    viewModel: ProductViewModel,
+    paddingValues: PaddingValues,
+    navController: NavController,
+    searchText: String,
+    onSearchTextChange: (String) -> Unit){
+
+    val products by viewModel.products.collectAsState()
+
+    // Filtrar los productos localmente en el composable
+    val filteredProducts = products.filter { product ->
+        product.title.contains(searchText, ignoreCase = true)
+    }
+
+    Column(
+        modifier = Modifier.padding(paddingValues),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // TextField para buscar productos
+        TextField(
+            value = searchText,
+            onValueChange = onSearchTextChange,
+            label = { Text("Buscar producto") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
+        LazyColumn(
+            modifier = Modifier
+                .background(Color(0xFF2B2626))
+        ){
+            items(filteredProducts){product ->
+                CardProduct(
+                    product = product,
+                    onClick = {navController.navigate("DetailView/${product.id}")},
+                    onEditClick = {},
+                    onDeleteClick = {
+                        viewModel.deleteProductById(product.id)
+                    }
+                ) {
+                    //enviar a la siguiente vista
+                    navController.navigate("DetailView/${product.id}")
+                }
+                Text(text = product.title, fontWeight = FontWeight.ExtraBold, color = Color.White,
+                    modifier = Modifier.padding(start = 10.dp))
+            }
+        }
+    }
+}
+```
