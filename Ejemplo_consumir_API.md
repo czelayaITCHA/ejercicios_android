@@ -658,7 +658,7 @@ IconButton(onClick = { showDialog = true }) {
            showDialog = false
         },
         title = { Text(text = "Confirmar eliminación") },
-        text = { Text("¿Estás seguro/a de que deseas eliminar este producto?") },
+        text = { Text("¿Está seguro/a de eliminar este producto?") },
         confirmButton = {
            Button( onClick = {
               onDeleteClick() // Llamar a la función para eliminar el producto
