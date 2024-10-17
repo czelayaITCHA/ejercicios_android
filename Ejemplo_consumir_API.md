@@ -698,7 +698,7 @@ onDeleteClick = {
 Ejecutar proyecto y probar esta funcionalidad, caba destacar que hará la eliminación momentaneamente(simulada) porque es una API Fake, que realmente al cargar de nuevo la aplicación el o los registros eliminados siempre se verán.
 
 ## 24.- Implementación de TextField para filtrar lista de productos
-### 24.1 Crear variable para el texto de búsqueda al inicio de la función HomeView
+### 24.1 Crear variable de estado para el texto de búsqueda al inicio de la función HomeView
 ```kotlin
  var searchText by remember { mutableStateOf("") }
 ```
