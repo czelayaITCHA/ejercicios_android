@@ -423,7 +423,7 @@ fun RatingBar(rating: Double) {
 }
 ```
 
-## 17.- Hacer cambios en la HomeView
+## 17.- Hacer cambios en la función HomeView
 ```kotlin
 @Composable
 fun HomeView(viewModel: ProductViewModel, navController: NavController){
@@ -762,4 +762,42 @@ fun ContentHomeView(
         }
     }
 }
+```
+## 25.- Implementar función de Agregar nuevo producto
+### 25.1 Crear método en la interface ApiProduct
+```kotlin
+// Método para registrar un nuevo producto
+@POST(ENDPOINT)
+suspend fun createProduct(@Body product: ProductModel): Response<ProductModel>
+```
+### 25.2 Programar método en el repositorio ProductRepository
+```kotlin
+ suspend fun createProduct(product: ProductModel): ProductModel? {
+    val response = apiProduct.createProduct(product)
+    if (response.isSuccessful) {
+       return response.body()
+    }
+    return null
+}
+```
+### 25.3 Crear método en el ViewModel --> ProductViewModel
+```kotlin
+ fun createProduct(product: ProductModel) {
+    viewModelScope.launch {
+       withContext(Dispatchers.IO) {
+          // Intentar crear el nuevo producto llamando al repositorio
+          val result = repository.createProduct(product)
+          if (result != null) {
+             // Actualizar el estado del ViewModel si la creación fue exitosa
+             val updatedList = _products.value.toMutableList().apply {
+                add(product)  // Agregamos el nuevo producto a la lista
+             }
+             _products.value = updatedList  // Emitimos la nueva lista
+             state = state.copy(successMessage = "Producto creado con éxito")
+          } else {
+             state = state.copy(errorMessage = "Error al crear el producto")
+          }
+       }
+     }
+ }
 ```
