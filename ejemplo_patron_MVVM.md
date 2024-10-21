@@ -16,18 +16,5 @@ Contiene la lógica de presentación. No tiene referencias directas a la vista, 
 Almacena y gestiona los datos necesarios para la interfaz de usuario y maneja la lógica de la vista.
 Utiliza observables (como LiveData o StateFlow) para notificar a la vista de los cambios en los datos.
 
-     +----------------+         +----------------+         +----------------+
-     |     View        |  <--->  |   ViewModel    |  <--->  |     Model      |
-     +----------------+         +----------------+         +----------------+
-           ^                            |                          |
-           |                            |                          |
-           |  Observa cambios            |   Solicita datos         |
-           |  y responde con UI          |   o interactúa con       |
-           |                             v   el modelo              v
-     +----------------+         +----------------+         +----------------+
-     |    Activity/    |         |     Logic      |         |   Repositorio  |
-     |    Fragment     |         |   de la UI     |         |  / API / DB    |
-     +----------------+         +----------------+         +----------------+
-
-     ![image](https://github.com/user-attachments/assets/5d30e157-6c58-4346-a365-f01ca4c68af7)
+    ![image](https://github.com/user-attachments/assets/212e4aef-fc84-4f16-9185-a6022f94c59e)
 
