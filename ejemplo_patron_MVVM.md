@@ -15,3 +15,16 @@ Actúa como intermediario entre el modelo y la vista.
 Contiene la lógica de presentación. No tiene referencias directas a la vista, lo que facilita el testeo.
 Almacena y gestiona los datos necesarios para la interfaz de usuario y maneja la lógica de la vista.
 Utiliza observables (como LiveData o StateFlow) para notificar a la vista de los cambios en los datos.
+
+     +----------------+         +----------------+         +----------------+
+     |     View        |  <--->  |   ViewModel    |  <--->  |     Model      |
+     +----------------+         +----------------+         +----------------+
+           ^                            |                          |
+           |                            |                          |
+           |  Observa cambios            |   Solicita datos         |
+           |  y responde con UI          |   o interactúa con       |
+           |                             v   el modelo              v
+     +----------------+         +----------------+         +----------------+
+     |    Activity/    |         |     Logic      |         |   Repositorio  |
+     |    Fragment     |         |   de la UI     |         |  / API / DB    |
+     +----------------+         +----------------+         +----------------+
