@@ -1,17 +1,18 @@
 ## Introducción 
 El patrón MVVM (Model-View-ViewModel) es un patrón de diseño arquitectónico que ayuda a separar la lógica de negocio, la lógica de presentación y la interfaz de usuario en las aplicaciones Android. Es muy utilizado cuando se emplean frameworks como Jetpack ViewModel y LiveData, que facilitan la implementación del patrón.
 
-Model (M):
+**Model (M):**
 
 Contiene la lógica de negocio y la gestión de datos. Es responsable de acceder a los datos, ya sea desde una base de datos, una API remota o cualquier otra fuente.
 Es completamente independiente de la vista y del ViewModel. El modelo no tiene conocimiento de las capas superiores.
 
-View (V):
+**View (V):**
 
 Es la interfaz de usuario. En Android, generalmente son las actividades, fragmentos, o vistas que interactúan con los usuarios.
 Se encarga de observar los datos expuestos por el ViewModel y reflejar los cambios en la interfaz.
 Debe ser lo más sencilla posible y no contener lógica de negocio.
-ViewModel (VM):
+
+**ViewModel (VM):**
 
 Actúa como intermediario entre el modelo y la vista.
 Contiene la lógica de presentación. No tiene referencias directas a la vista, lo que facilita el testeo.
