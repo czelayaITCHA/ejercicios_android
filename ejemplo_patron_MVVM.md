@@ -16,5 +16,5 @@ Contiene la lógica de presentación. No tiene referencias directas a la vista, 
 Almacena y gestiona los datos necesarios para la interfaz de usuario y maneja la lógica de la vista.
 Utiliza observables (como LiveData o StateFlow) para notificar a la vista de los cambios en los datos.
 
-    ![image](https://github.com/user-attachments/assets/212e4aef-fc84-4f16-9185-a6022f94c59e)
+![image](https://github.com/user-attachments/assets/212e4aef-fc84-4f16-9185-a6022f94c59e)
 
