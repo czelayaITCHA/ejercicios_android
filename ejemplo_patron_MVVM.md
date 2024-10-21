@@ -28,3 +28,6 @@ Utiliza observables (como LiveData o StateFlow) para notificar a la vista de los
      |    Activity/    |         |     Logic      |         |   Repositorio  |
      |    Fragment     |         |   de la UI     |         |  / API / DB    |
      +----------------+         +----------------+         +----------------+
+
+     ![image](https://github.com/user-attachments/assets/5d30e157-6c58-4346-a365-f01ca4c68af7)
+
