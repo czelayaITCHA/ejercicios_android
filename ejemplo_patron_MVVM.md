@@ -13,7 +13,6 @@ Se encarga de observar los datos expuestos por el ViewModel y reflejar los cambi
 Debe ser lo más sencilla posible y no contener lógica de negocio.
 
 **ViewModel (VM):**
-
 Actúa como intermediario entre el modelo y la vista.
 Contiene la lógica de presentación. No tiene referencias directas a la vista, lo que facilita el testeo.
 Almacena y gestiona los datos necesarios para la interfaz de usuario y maneja la lógica de la vista.
